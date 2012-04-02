@@ -1,5 +1,5 @@
 {
-   "abstract" : "Build and install the GNU build system",
+   "abstract" : "Build and install the GNU build system.",
    "author" : [
       "Richard Sim\u00c3\u00b5es <rsimoes AT cpan DOT org>"
    ],
@@ -21,12 +21,19 @@
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.3601"
+            "Archive::Tar" : "0",
+            "ExtUtils::CChecker" : "0",
+            "File::ShareDir" : "0",
+            "IPC::Cmd" : "0",
+            "Module::Build" : "0.3601",
+            "Net::FTP" : "0",
+            "Test::Requires" : "0",
+            "perl" : "5.008_008",
+            "version" : "0"
          }
       },
       "runtime" : {
          "requires" : {
-            "Exporter" : "0",
             "perl" : "5.008"
          }
       },
@@ -52,6 +59,6 @@
          "web" : "https://github.com/rsimoes/alien-autotools"
       }
    },
-   "version" : "v0.0.1"
+   "version" : "v0.0.2"
 }
 

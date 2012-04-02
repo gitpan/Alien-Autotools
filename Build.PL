@@ -5,11 +5,9 @@ use warnings FATAL => "all";
 use utf8;
 use version;
 use Archive::Tar;
-use Data::Dump "dump";
 use ExtUtils::CChecker;
 use File::Spec::Functions qw(catdir catfile);
-use File::Which "which";
-use IPC::Cmd "run";
+use IPC::Cmd qw(run can_run);
 use Module::Build;
 use Net::FTP;
 
@@ -24,13 +22,20 @@ my $builder = Module::Build->new(
     'perl' => '5.006'
   },
   'configure_requires' => {
-    'Module::Build' => '0.3601'
+    'Archive::Tar' => '0',
+    'ExtUtils::CChecker' => '0',
+    'File::ShareDir' => '0',
+    'IPC::Cmd' => '0',
+    'Module::Build' => '0.3601',
+    'Net::FTP' => '0',
+    'Test::Requires' => '0',
+    'perl' => '5.008_008',
+    'version' => '0'
   },
   'requires' => {
-    'Exporter' => '0',
     'perl' => '5.008'
   },
-	  'dist_abstract' => 'Build and install the GNU build system',
+	  'dist_abstract' => 'Build and install the GNU build system.',
   'dist_name' => 'Alien-Autotools',
   'license' => 'lgpl',
 	  'dist_author' => [
@@ -50,7 +55,7 @@ my %autotools = map {
 	$version =~ s/^(?<!.)(\d\.\d+)$/$1.0/m;
 	if ( !$ENV{COMPILE_ALIEN_AUTOTOOLS}
 		 && version->new($version) >= $_->{min_version} ) {
-		# Skipping installation and passing path found by &which:
+		# Skipping installation and passing path found by &can_run:
 		$tool => $bin_path }
 	else {
 		print "Downloading $tool source archive from ftp.gnu.org...\n";
@@ -83,15 +88,15 @@ my %autotools = map {
 		$tool, catfile($share_dir, "bin", $tool) } }
 	{ tool => "autoconf",
 	  min_version => version->new("2.68.0"),
-	  bin_path => which("autoconf"),
+	  bin_path => can_run("autoconf"),
 	  ftp_path => "/gnu/autoconf/autoconf-2.68.tar.gz" },
 	{ tool => "automake",
 	  min_version => version->new("1.11.0"),
-	  bin_path => which("automake"),
+	  bin_path => can_run("automake"),
 	  ftp_path => "/gnu/automake/automake-1.11.3.tar.gz" },
 	{ tool => "libtool",
 	  min_version => version->new("2.4.0"),
-	  bin_path => which("libtool"),
+	  bin_path => can_run("libtool"),
 	  ftp_path => "/gnu/libtool/libtool-2.4.2.tar.gz" };
 
 # Update Perl module:

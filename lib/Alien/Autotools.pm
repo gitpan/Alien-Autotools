@@ -5,8 +5,8 @@ use warnings FATAL => "all";
 use utf8;
 use Exporter "import";
 
-our $VERSION = 'v0.0.1'; # VERSION
-# ABSTRACT: Build and install the GNU build system
+our $VERSION = 'v0.0.2'; # VERSION
+# ABSTRACT: Build and install the GNU build system.
 
 our @EXPORT_OK = qw(autoconf_path automake_path libtool_path);
 
@@ -21,7 +21,7 @@ sub libtool_path () { "##" }
 
 =head1 NAME
 
-Alien::Autotools - Build and install the GNU build system
+Alien::Autotools - Build and install the GNU build system.
 
 =head1 SYNOPSIS
 
@@ -54,7 +54,7 @@ L<ftp://ftp.gnu.org/>.
 
 =back
 
-Each function is exportable on request, takes no arguments and returns the
+Each function is exportable on request, takes no arguments, and returns the
 absolute path to its respective executable binary.
 
 =head1 AUTHOR

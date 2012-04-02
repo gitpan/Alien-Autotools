@@ -1,5 +1,5 @@
 ---
-abstract: 'Build and install the GNU build system'
+abstract: 'Build and install the GNU build system.'
 author:
   - 'Richard Simões <rsimoes AT cpan DOT org>'
 build_requires:
@@ -10,7 +10,15 @@ build_requires:
   Test::Requires: 0
   perl: 5.006
 configure_requires:
+  Archive::Tar: 0
+  ExtUtils::CChecker: 0
+  File::ShareDir: 0
+  IPC::Cmd: 0
   Module::Build: 0.3601
+  Net::FTP: 0
+  Test::Requires: 0
+  perl: 5.008_008
+  version: 0
 dynamic_config: 0
 generated_by: 'Dist::Zilla version 4.300013, CPAN::Meta::Converter version 2.120900'
 license: lgpl
@@ -19,10 +27,9 @@ meta-spec:
   version: 1.4
 name: Alien-Autotools
 requires:
-  Exporter: 0
   perl: 5.008
 resources:
   bugtracker: https://github.com/rsimoes/alien-autotools/issues
   homepage: https://metacpan.org/release/Alien-Autotools
   repository: git://github.com/rsimoes/alien-autotools.git
-version: v0.0.1
+version: v0.0.2
