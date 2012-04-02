@@ -1,0 +1,116 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings FATAL => "all";
+use utf8;
+use version;
+use Archive::Tar;
+use Data::Dump "dump";
+use ExtUtils::CChecker;
+use File::Spec::Functions qw(catdir catfile);
+use File::Which "which";
+use IPC::Cmd "run";
+use Module::Build;
+use Net::FTP;
+
+my $builder = Module::Build->new(
+	# Defaults inserted by DistZilla:
+	  'build_requires' => {
+    'File::Find' => '0',
+    'File::Temp' => '0',
+    'Module::Build' => '0.3601',
+    'Test::More' => '0',
+    'Test::Requires' => '0',
+    'perl' => '5.006'
+  },
+  'configure_requires' => {
+    'Module::Build' => '0.3601'
+  },
+  'requires' => {
+    'Exporter' => '0',
+    'perl' => '5.008'
+  },
+	  'dist_abstract' => 'Build and install the GNU build system',
+  'dist_name' => 'Alien-Autotools',
+  'license' => 'lgpl',
+	  'dist_author' => [
+    'Richard Simões <rsimoes AT cpan DOT org>'
+  ],
+	dist_version_from => "lib/Alien/Autotools.pm",
+	share_dir => "share" );
+
+my %autotools = map {
+	my ($tool, $bin_path, $ftp_path) = @{$_}{qw(tool bin_path ftp_path)};
+	my ($version) = $bin_path
+		? do {
+			my ($output) = ( run(
+				command => [$bin_path, "--version"] ) )[2][0] =~ /([\d.]+)/ }
+		: 0;
+	# Convert to semantic version
+	$version =~ s/^(?<!.)(\d\.\d+)$/$1.0/m;
+	if ( !$ENV{COMPILE_ALIEN_AUTOTOOLS}
+		 && version->new($version) >= $_->{min_version} ) {
+		# Skipping installation and passing path found by &which:
+		$tool => $bin_path }
+	else {
+		print "Downloading $tool source archive from ftp.gnu.org...\n";
+		my $ftp = Net::FTP->new("ftp.gnu.org")
+			or die "Unable to connect to FTP server";
+		$ftp->login or die "Unable to anonymously login to FTP server";
+		$ftp->binary;
+		$ftp->get($ftp_path) or die "Failed to download $ftp_path";
+		$ftp->quit;
+
+		my ($archive) = glob("*.tar.gz");
+		Archive::Tar->new($archive)->extract;
+		unlink $archive;
+
+		my $base_dir = $builder->base_dir;
+		my $share_dir = catdir($base_dir, "share");
+		my $tool_dir = glob "$tool*";
+		chdir $tool_dir;
+
+		run( command => ["./configure", "--prefix=$share_dir"] )
+			or die "Failed to configure $tool";
+		print "Compiling $tool...\n";
+		run( command => [qw(make -j9)]) or die "Failed to make $tool";
+		print "Installing...\n";
+		run( command => [qw(make install)] )
+			or die "Failed to install $tool";
+		chdir $base_dir;
+
+		# Passing sharedir path of new installation:
+		$tool, catfile($share_dir, "bin", $tool) } }
+	{ tool => "autoconf",
+	  min_version => version->new("2.68.0"),
+	  bin_path => which("autoconf"),
+	  ftp_path => "/gnu/autoconf/autoconf-2.68.tar.gz" },
+	{ tool => "automake",
+	  min_version => version->new("1.11.0"),
+	  bin_path => which("automake"),
+	  ftp_path => "/gnu/automake/automake-1.11.3.tar.gz" },
+	{ tool => "libtool",
+	  min_version => version->new("2.4.0"),
+	  bin_path => which("libtool"),
+	  ftp_path => "/gnu/libtool/libtool-2.4.2.tar.gz" };
+
+# Update Perl module:
+do {
+	open my $LIB, "<", catdir qw(lib Alien Autotools.pm);
+	local $/;
+	my $lib = <$LIB>;
+	close $LIB;
+	$lib =~ s/##/$autotools{autoconf}/;
+	$lib =~ s/##/$autotools{automake}/;
+	$lib =~ s/##/$autotools{libtool}/;
+	open $LIB, ">", "lib/Alien/Autotools.pm";
+	print $LIB $lib };
+
+# Update manifest:
+my @share_files = map { glob catdir qw(share $_ *) } qw(bin share);
+@share_files > 0 and do {
+	open my $MANIFEST, ">>", "MANIFEST";
+	print $MANIFEST map {
+		catfile($builder->dist_dir, $_) . "\n" } @share_files };
+
+$builder->create_build_script;
