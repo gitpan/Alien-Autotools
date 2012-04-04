@@ -23,6 +23,7 @@
          "requires" : {
             "Archive::Tar" : "0",
             "ExtUtils::CChecker" : "0",
+            "File::Path" : "2.08",
             "File::ShareDir" : "0",
             "IPC::Cmd" : "0",
             "Module::Build" : "0.3601",
@@ -56,6 +57,6 @@
          "web" : "https://github.com/rsimoes/alien-autotools"
       }
    },
-   "version" : "v0.0.3"
+   "version" : "v0.0.4"
 }
 

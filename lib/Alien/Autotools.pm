@@ -5,16 +5,16 @@ use warnings FATAL => "all";
 use utf8;
 use Exporter "import";
 
-our $VERSION = 'v0.0.3'; # VERSION
+our $VERSION = 'v0.0.4'; # VERSION
 # ABSTRACT: Build and install the GNU build system.
 
-our @EXPORT_OK = qw(autoconf_path automake_path libtool_path);
+our @EXPORT_OK = qw(autoconf_dir automake_dir libtool_dir);
 
-sub autoconf_path () { "##" }
+sub autoconf_dir () { "##" }
 
-sub automake_path () { "##" }
+sub automake_dir () { "##" }
 
-sub libtool_path () { "##" }
+sub libtool_dir () { "##" }
 
 1;
 =encoding utf8
@@ -25,8 +25,8 @@ Alien::Autotools - Build and install the GNU build system.
 
 =head1 SYNOPSIS
 
-    use Alien::Autotools qw(autoconf_path);
-    print autoconf_path(), "\n";
+    use Alien::Autotools qw(autoconf_dir);
+    print autoconf_dir(), "\n";
 
 =head1 DESCRIPTION
 
@@ -46,16 +46,18 @@ L<ftp://ftp.gnu.org/>.
 
 =over
 
-=item autoconf_path()
+=item autoconf_dir()
 
-=item automake_path()
+=item automake_dir()
 
-=item libtool_path()
+=item libtool_dir()
 
 =back
 
 Each function is exportable on request, takes no arguments, and returns the
-absolute path to its respective executable binary.
+absolute path to its respective executable binary's directory. The directory
+will be in the shared directory if a given tool was installed, or the directory
+path from C<$ENV{PATH}> otherwise.
 
 =head1 AUTHOR
 
