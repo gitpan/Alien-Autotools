@@ -5,7 +5,7 @@ use warnings FATAL => "all";
 use utf8;
 use Exporter "import";
 
-our $VERSION = 'v0.0.2'; # VERSION
+our $VERSION = 'v0.0.3'; # VERSION
 # ABSTRACT: Build and install the GNU build system.
 
 our @EXPORT_OK = qw(autoconf_path automake_path libtool_path);

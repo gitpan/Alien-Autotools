@@ -39,11 +39,8 @@
       },
       "test" : {
          "requires" : {
-            "File::Find" : "0",
-            "File::Temp" : "0",
             "Test::More" : "0",
-            "Test::Requires" : "0",
-            "perl" : "5.006"
+            "Test::Requires" : "0"
          }
       }
    },
@@ -59,6 +56,6 @@
          "web" : "https://github.com/rsimoes/alien-autotools"
       }
    },
-   "version" : "v0.0.2"
+   "version" : "v0.0.3"
 }
 

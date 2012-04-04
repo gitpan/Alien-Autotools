@@ -14,12 +14,9 @@ use Net::FTP;
 my $builder = Module::Build->new(
 	# Defaults inserted by DistZilla:
 	  'build_requires' => {
-    'File::Find' => '0',
-    'File::Temp' => '0',
     'Module::Build' => '0.3601',
     'Test::More' => '0',
-    'Test::Requires' => '0',
-    'perl' => '5.006'
+    'Test::Requires' => '0'
   },
   'configure_requires' => {
     'Archive::Tar' => '0',
@@ -43,6 +40,13 @@ my $builder = Module::Build->new(
   ],
 	dist_version_from => "lib/Alien/Autotools.pm",
 	share_dir => "share" );
+
+my $base_dir = $builder->base_dir;
+my $share_dir = catdir($base_dir, "share");
+
+# Automake needs a possibly newer autoconf, than what the system has, so add the
+# new bin dir to $ENV{PATH}.
+$ENV{PATH} = catdir($share_dir, "bin") . ":$ENV{PATH}";
 
 my %autotools = map {
 	my ($tool, $bin_path, $ftp_path) = @{$_}{qw(tool bin_path ftp_path)};
@@ -70,11 +74,7 @@ my %autotools = map {
 		Archive::Tar->new($archive)->extract;
 		unlink $archive;
 
-		my $base_dir = $builder->base_dir;
-		my $share_dir = catdir($base_dir, "share");
-		my $tool_dir = glob "$tool*";
-		chdir $tool_dir;
-
+		chdir [glob "$tool-*"]->[0];
 		run( command => ["./configure", "--prefix=$share_dir"] )
 			or die "Failed to configure $tool";
 		print "Compiling $tool...\n";
