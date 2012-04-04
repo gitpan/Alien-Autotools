@@ -30,4 +30,4 @@ resources:
   bugtracker: https://github.com/rsimoes/alien-autotools/issues
   homepage: https://metacpan.org/release/Alien-Autotools
   repository: git://github.com/rsimoes/alien-autotools.git
-version: v0.0.4
+version: v0.0.5
