@@ -28,14 +28,13 @@
             "IPC::Cmd" : "0",
             "Module::Build" : "0.3601",
             "Net::FTP" : "0",
-            "Test::Requires" : "0",
-            "perl" : "5.008_008",
+            "perl" : "5.010_001",
             "version" : "0"
          }
       },
       "runtime" : {
          "requires" : {
-            "perl" : "5.008"
+            "perl" : "v5.10.0"
          }
       },
       "test" : {
@@ -57,6 +56,6 @@
          "web" : "https://github.com/rsimoes/alien-autotools"
       }
    },
-   "version" : "v0.0.5"
+   "version" : "v0.0.6"
 }
 

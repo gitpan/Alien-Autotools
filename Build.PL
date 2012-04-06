@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 
+use v5.10;
 use strict;
 use warnings FATAL => "all";
 use utf8;
@@ -30,12 +31,11 @@ my $builder = Module::Build->new(
     'IPC::Cmd' => '0',
     'Module::Build' => '0.3601',
     'Net::FTP' => '0',
-    'Test::Requires' => '0',
-    'perl' => '5.008_008',
+    'perl' => '5.010_001',
     'version' => '0'
   },
   'requires' => {
-    'perl' => '5.008'
+    'perl' => 'v5.10.0'
   },
 	  'dist_abstract' => 'Build and install the GNU build system.',
   'dist_name' => 'Alien-Autotools',
@@ -65,10 +65,11 @@ my %autotools = map {
 	$version =~ s/^(?<!.)(\d\.\d+)$/$1.0/m;
 	if ( !$ENV{COMPILE_ALIEN_AUTOTOOLS}
 		 && version->new($version) >= $_->{min_version} ) {
+		say "Version $version of $tool found; skipping compilation...";
 		# Skipping installation and passing directory of path found by &can_run:
 		$tool => join "", ( splitpath($bin_path) )[0, 1] }
 	else {
-		print "Downloading $tool source archive from ftp.gnu.org...\n";
+		say "Downloading $tool source archive from ftp.gnu.org...";
 		my $ftp = Net::FTP->new("ftp.gnu.org")
 			or die "Unable to connect to FTP server";
 		$ftp->login or die "Unable to anonymously login to FTP server";
